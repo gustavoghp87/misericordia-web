@@ -1,0 +1,53 @@
+<script>
+  document.getElementById('salir').style.display = 'none';
+</script>
+
+<div class="container container2" style="max-width: 95%;">
+  <br>
+  <div class="container" style="padding-top:30px; margin-bottom:50px; border: black 1px solid; border-radius:12px; max-width:600px;">
+    
+    <div class="row" style="margin-bottom:0px;">
+      <p class="fontsforweb_fontid_77695" style="display:block; margin:auto;">
+        REGISTRARSE
+      </p>
+    </div>
+
+    <p style="color:red; text-align:center; max-width:400px;">{{error.error}}</p>
+
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+      function onSubmit(token) { document.getElementById("demo-form").submit(); };
+    </script>
+
+    <div class="container" style="padding-top:15px; display:block; margin:auto; max-width:500px;">
+      <form action="/register" method="POST" style=" display:block; margin:auto;" id="demo-form">
+        <input class="form-control" type="email" name="email" style="margin-bottom:12px;" placeholder="Correo electrónico" autofocus>
+        <input class="form-control" type="password" name="password" style="margin-bottom:12px;" placeholder="Contraseña">
+        <input class="form-control" type="password" name="confpassword" style="margin-bottom:12px;" placeholder="Confirmar Contraseña">
+        <input class="form-control" type="number" name="group" style="margin-bottom:30px;" placeholder="Número de Grupo" />
+        <button
+         class="btn btn-danger g-recaptcha"
+         style="width:100%; display:block; margin:auto; height:50px;"
+         data-sitekey="6LefBLcZAAAAANjU9eswkE-TMmarZL72OzW_ZlSz"
+         data-callback='onSubmit'
+         data-action='submit'>
+          REGISTRARSE
+        </button>
+        {{!-- <input class="form-control" type="text" name="ip" style="display:none;" id="ip"></span> --}}
+        <a href="/login"><P style="font-size:1.1rem; padding:15px 0px; text-align:end;">Volver a ingreso</P></a>
+      </form>
+    </div>
+
+  </div>
+
+    <P style="font-size:0.9rem; padding-bottom:12px; text-align:center; display:block;">Luego de registrarse, se debe aguardar la autorización del grupo de territorios</P>
+
+  <br><br><br><br><br>
+
+</div>
+
+
+<script>
+    document.getElementById('groupNav').style.display = 'none';
+</script>
+

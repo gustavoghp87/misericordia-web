@@ -1,0 +1,183 @@
+<div class="container container2" style="max-width:95%;">
+
+  <div class="container" style="padding-top:10px; padding-left:0px; padding-right:0px; margin-bottom:50px;">
+
+    <div class="row" style="padding-top:35px; margin-bottom:10px; padding-left:5%;">
+
+      <div class="col-lg-4" style="display:block; margin:auto;">
+        <p class="fontsforweb_fontid_77695" style="display:block; margin:auto; font-size:3rem; text-align:center;" id="Territorio">
+          TERRITORIO <span id="territorio"> {{json.numero}} </span>
+        </p>
+        <span style="display:none;" id="cantidad"> {{json.cantidad}} </span>
+      </div>
+
+      <div class="col-lg-8" style="display:block; margin:auto;">
+        <img src="/img/{{json.numero}}.jpg" style="border: 1px solid black; border-radius:4px; padding:5px; max-width:80%; height:auto; display:block; margin:auto;">
+      </div>
+
+    </div>
+
+
+    {{!-- GLOBALES --}}
+
+    <div class="col" style="padding:50px 30px 8% 8%; display:none;" id="estadisticasGlob">
+      <h3 style="margin-right:20px;"> La cantidad de viviendas en la base de datos es: {{ json.cantGlob }} </h3>
+      <h3 style="margin-right:20px;"> &nbsp; &nbsp; , de las cuales quedan sin predicar: {{ json.quedanGlob }} ({{json.porcNopredGlob}}%) </h3>
+      <br />
+      <h3 style="margin-right:20px;"> Contestaron: {{json.contestaronGlob}} </h3>
+      <h3 style="margin-right:20px;"> Se dejó mensaje en contestadora: {{json.contestadorGlob}} </h3>
+      <h3 style="margin-right:20px;"> Se dejaron cartas en: {{json.cantCartasGlob}}</h3>
+      <h3 style="margin-right:20px;"> Revisitas: {{json.cantReviGlob}} </h3>
+      <h3 style="margin-right:20px;"> No llamar: {{json.cantNollamarGlob}} </h3>
+      <h3 style="margin-right:20px;"> Se llamaron pero nadie atendió: {{json.noContestoGlob}} </h3>
+      <h3 style="margin-right:20px;"> No abonados en servicio: {{json.cantNoabonGlob}} </h3>
+      <br />
+      {{!-- <h3 style="margin-right:20px;"> La cantidad de manzanas es: {{json.cantManzanas}} </h3> --}}
+      <hr>
+
+
+      <div id="root1"></div>
+      <div id="root2"></div>
+      <div id="root3"></div>
+      <div id="root4"></div>
+      <div id="root5"></div>
+      <div id="root6"></div>
+      <div id="root7"></div>
+      <div id="root8"></div>
+      <div id="root9"></div>
+      <div id="root10"></div>
+      <div id="root11"></div>
+      <div id="root12"></div>
+      <div id="root13"></div>
+      <div id="root14"></div>
+      <div id="root15"></div>
+      <div id="root16"></div>
+      <div id="root17"></div>
+      <div id="root18"></div>
+      <div id="root19"></div>
+      <div id="root20"></div>
+      <div id="root21"></div>
+      <div id="root22"></div>
+      <div id="root23"></div>
+      <div id="root24"></div>
+      <div id="root25"></div>
+      <div id="root26"></div>
+      <div id="root27"></div>
+      <div id="root28"></div>
+      <div id="root29"></div>
+      <div id="root30"></div>
+      <div id="root31"></div>
+      <div id="root32"></div>
+      <div id="root33"></div>
+      <div id="root34"></div>
+      <div id="root35"></div>
+      <div id="root36"></div>
+      <div id="root37"></div>
+      <div id="root38"></div>
+      <div id="root39"></div>
+      <div id="root40"></div>
+      <div id="root41"></div>
+      <div id="root42"></div>
+      <div id="root43"></div>
+      <div id="root44"></div>
+      <div id="root45"></div>
+      <div id="root46"></div>
+      <div id="root47"></div>
+      <div id="root48"></div>
+      <div id="root49"></div>
+      <div id="root50"></div>
+      <div id="root51"></div>
+      <div id="root52"></div>
+      <div id="root53"></div>
+      <div id="root54"></div>
+      <div id="root55"></div>
+      <div id="root56"></div>
+
+
+      <script>
+        if (location.pathname.slice(0,14)=='/estadisticas' && role==1) {
+          socket.emit('estadisticas:globales', {
+            terr: 1
+          });
+
+          socket.on('estadisticas:globales', (data) => {
+            //console.log("recibido", data)
+            let n = data.nextTerr - 1;
+            let render = "";
+            render += '<h3> En el territorio <span style="font-size:2.5rem; color:red;"> ' + n + '</span> tenemos ' + data.cant + ' viviendas </h3>'
+            render += '<h3 style="font-size:2rem; color:darkblue;"> Restan predicar ' + data.limpio + ' (' + data.limpioPC + '%)</h3>'
+            render += '<br>'
+            render += '<h3> Contestaron: ' + data.contestaron + '</h3>'
+            render += '<h3> Se dejó mensaje en contestadora: ' + data.contestador + '</h3>'
+            render += '<h3> Se dejaron cartas en: ' + data.cantCartas + '</h3>'
+            render += '<h3> Revisitas: ' + data.revisita + '</h3>'
+            render += '<h3> No llamar: ' + data.noLlamar + '</h3>'
+            render += '<h3> Se llamaron pero nadie atendió: ' + data.noContesto + '</h3>'
+            render += '<h3> No abonados en servicio: ' + data.noAbon + '</h3>'
+            render += '<hr style="width:5px;">'
+
+            let root = "root" + n;
+            document.getElementById(root).innerHTML = render;
+            console.log("Prox:", data.nextTerr)
+
+            if (data.nextTerr<57) {
+              socket.emit('estadisticas:globales', {
+                terr: data.nextTerr
+              });
+            };
+
+          });
+        };     // if solo globales
+      </script>
+
+
+      {{!-- {{#each territorios}}
+        <h3> En el territorio <span style="font-size:2.5rem; color:red;">{{math @index "+" 1}}</span> tenemos {{cant}} viviendas</h3>
+        <h3 style="font-size:2rem; color:darkblue;"> Restan predicar {{limpio}} ({{limpioPC}}%)</h3>
+        <br>
+        <h3> Contestaron: {{contestaron}} </h3>
+        <h3> Se dejó mensaje en contestadora: {{contestador}} </h3>
+        <h3> Se dejaron cartas en: {{cantCartas}}</h3>
+        <h3> Revisitas: {{revisita}} </h3>
+        <h3> No llamar: {{noLlamar}} </h3>
+        <h3> Se llamaron pero nadie atendió: {{noContesto}} </h3>
+        <h3> No abonados en servicio: {{noAbon}} </h3>
+        <hr style="width:5px;">
+      {{/each}} --}}
+
+    </div>
+
+
+
+    {{!-- POR TERRITORIO --}}
+
+    <div class="col" style="padding:50px 30px 8% 8%; display:none;" id="estadisticas">
+      <h3 style="margin-right:20px;"> La cantidad de viviendas en la base de datos es: {{ json.cantidad }} </h3>
+      <h3 style="margin-right:20px;"> &nbsp; &nbsp; , de las cuales quedan sin predicar: {{ json.cantNoPredTotal }} ({{json.porcNopred}}%) </h3>
+      <br />
+      <h3> Contestaron: {{json.cantContestaron}} </h3>
+      <h3> Se dejó mensaje en contestadora: {{json.cantContestador}} </h3>
+      <h3> Se dejaron cartas en: {{json.cantCartas}}</h3>
+      <h3 style="margin-right:20px;"> Revisitas: {{json.cantRevi}} </h3>
+      <h3 style="margin-right:20px;"> No llamar: {{json.cantNollamar}} </h3>
+      <h3 style="margin-right:20px;"> Los teléfonos no abonados en servicio son: {{json.cantNoabon}} </h3>
+      <br />
+      <h3 style="margin-right:20px;"> La cantidad de manzanas es: {{json.cantManzanas}} </h3>
+    </div>
+
+
+
+    <script>
+      console.log(location.pathname.slice(0,14))
+      if (location.pathname.slice(0,14)=='/estadisticas' && role==1) {
+        document.getElementById('estadisticasGlob').style.display = 'block';
+      }
+      
+      if (location.pathname.slice(0,14)=='/estadisticas/' && role==1) {
+        document.getElementById('estadisticas').style.display = 'block';
+      }
+    </script>    
+
+  </div>
+</div>
+

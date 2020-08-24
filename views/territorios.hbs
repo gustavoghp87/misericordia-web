@@ -1,0 +1,490 @@
+<script>
+
+  let cuadras = [];
+  let Cuadras = [];
+
+  function colores (ddmb, estado) {
+    let Ddmb = document.getElementById(ddmb);
+    if (estado == "No predicado") {
+      Ddmb.style.backgroundColor = 'darkgray';
+      Ddmb.style.borderColor = 'darkgray';
+    } else if (estado == "No llamar") {
+      Ddmb.style.backgroundColor = 'black';
+      Ddmb.style.borderColor = 'black';
+    } else if (estado == "Revisita") {
+      Ddmb.style.backgroundColor = '#f20ecc';
+      Ddmb.style.borderColor = '#f20ecc';
+    } else if (estado == "No abonado en serv") {
+      Ddmb.style.backgroundColor = 'green';
+      Ddmb.style.borderColor = 'green';
+    } else if (estado == "No contestó") {
+      Ddmb.style.backgroundColor = 'blue';
+      Ddmb.style.borderColor = 'blue';
+    } else if (estado == "Contestó") {
+      Ddmb.style.backgroundColor = '#ffa500';
+      Ddmb.style.borderColor = '#ffa500';
+    } else if (estado == "Msj en contestador") {
+      Ddmb.style.backgroundColor = 'red';
+      Ddmb.style.borderColor = 'red';
+    } else if (estado == "A dejar carta") {
+      Ddmb.style.backgroundColor = 'darkred';
+      Ddmb.style.borderColor = 'darkred';
+    } else { alert('No se pudo leer el estado') };
+  };
+
+  function actualizarBoton (vivienda, estado) {
+    let ddmb = "ddmb" + vivienda;
+    document.getElementById(ddmb).innerText = estado;
+    colores(ddmb, estado);
+    //console.log(Date.now())
+    ponerFecha(vivienda, Date.now())
+    document.getElementById('invBtn').click();
+  };
+
+  function ddmbEdit (estado) {
+    document.getElementById("ddBtnAdd").innerText = estado;
+    colores("ddBtnAdd", estado);
+    document.getElementById('invBtnModal').click();
+  };
+
+  function addCuadra (estado) {
+    document.getElementById('ddAddCuadra').innerText = estado;
+    document.getElementById('invBtnModal').click();
+  };
+
+  function ponerFecha (vivienda, timestamp) {
+    let cardDate = "cardDate" + vivienda;
+    let ddmb = "ddmb" + vivienda;
+    if (document.getElementById(ddmb).innerText.trim()!="No predicado") { document.getElementById(cardDate).style.display='block'; }
+    else { document.getElementById(cardDate).style.display='none'; };
+
+    try {
+      fecha = new Date(parseInt(timestamp));
+      mes = parseInt(fecha.getMonth()) + 1;
+      if (mes==1) {mes="enero"}
+      else if (mes==2) {mes="febrero"}
+      else if (mes==3) {mes="marzo"}
+      else if (mes==4) {mes="abril"}
+      else if (mes==5) {mes="mayo"}
+      else if (mes==6) {mes="junio"}
+      else if (mes==7) {mes="julio"}
+      else if (mes==8) {mes="agosto"}
+      else if (mes==9) {mes="septiembre"}
+      else if (mes==10) {mes="octubre"}
+      else if (mes==11) {mes="noviembre"}
+      else if (mes==12) {mes="diciembre"}
+      inyectFecha = "inyectFecha" + vivienda;
+      document.getElementById(inyectFecha).innerText = fecha.getDate() + " de " + mes + " " + fecha.getFullYear();
+    } catch(e) {};
+//    enviarCambios(vivienda)
+  };
+
+  function cambioCheckbox (vivienda) {
+    let box = "checkbox" + vivienda;
+    let Box = document.getElementById(box);
+    let telefono = "telefono" + vivienda;
+    if (Box.checked) {
+      document.getElementById(telefono).style.display = 'none';
+    } else {
+      document.getElementById(telefono).style.display = 'block';
+    };
+  };
+
+  function estadoCheckbox (vivienda, booleano) {
+    check = "checkbox" + vivienda;
+    document.getElementById(check).checked = booleano;
+    cambioCheckbox(vivienda)
+  };
+
+  function enviarCambios(vivienda) {
+    let ddmb = "ddmb" + vivienda;
+    let estado = document.getElementById(ddmb).innerText.trim();
+    let textarea = "textarea" + vivienda;
+    let observaciones = document.getElementById(textarea).value.trim();
+    let box = "checkbox" + vivienda;
+    let noAbonado = document.getElementById(box).checked;
+    let timest = "timestamp" + vivienda;
+    let timestamp = Date.now();
+
+//    console.log(vivienda, estado, observaciones, noAbonado, timestamp)
+
+    socket.emit('vivienda:cambio', {
+      vivienda: vivienda.toString(),
+      estado,
+      observaciones,
+      noAbonado,
+      timestamp,
+      email: '{{json.user}}'
+    });
+  };
+
+  socket.on('vivienda:cambio', function (data) {
+    //console.log("Llegó", data);
+    try {
+      actualizarBoton(data.vivienda, data.estado)
+    } catch(e) {};
+    try {
+      ponerFecha (data.vivienda, data.timestamp)
+    } catch(e) {};
+    try {
+      estadoCheckbox(data.vivienda, data.noAbonado)
+    } catch(e) {};
+    
+      texta = "textarea" + data.vivienda;
+      document.getElementById(texta).value = data.observaciones;
+  });
+
+
+</script>
+
+
+<span style="display:none;" id="invBtn"></span>
+
+<div class="container container2" style="max-width:95%;">
+  <div class="container" style="padding-top:10px; padding-left:0px; padding-right:0px; margin-bottom:50px;">
+
+    <div class="row" style="padding-top:35px; margin-bottom:10px;">
+
+      <div class="col-lg-3" style="display:block; margin:auto;">
+        <p class="fontsforweb_fontid_77695" style="display:block; margin:auto; font-size:3rem; text-align:center;" id="Territorio">
+          TERRITORIO <span id="territorio"> {{json.numero}} </span>
+        </p> 
+        <span style="display:none;" id="cantidad"> {{viviendas.length}} </span>
+        <span style="display:none;" id="manzanaActual"> {{json.manzana}} </span>
+      </div>
+
+      <div class="col-lg-6" style="display:block; margin:auto;">
+        <img src="/img/{{json.numero}}.jpg" style="border: 1px solid black; border-radius:4px; padding:5px; max-width:80%; height:auto; display:block; margin:auto;">
+      </div>
+
+      <div class="col-lg-3" style="display:block; margin:auto;">
+        <div class="dropdown" style="display:block; margin-right:10%;">
+          <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuManzana" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:180px; display:block; margin:auto; font-size:1.3rem;">
+            Manzana {{json.manzana}}
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuManzana">
+            <a href="/territorios/{{json.numero}}/1"><input type="button" class="dropdown-item" value="Manzana 1" id="manzana1"/></a>
+            <a href="/territorios/{{json.numero}}/2"><input type="button" class="dropdown-item" value="Manzana 2" id="manzana2"/></a>
+            <a href="/territorios/{{json.numero}}/3"><input type="button" class="dropdown-item" value="Manzana 3" id="manzana3"/></a>
+            <a href="/territorios/{{json.numero}}/4"><input type="button" class="dropdown-item" value="Manzana 4" id="manzana4"/></a>
+            <a href="/territorios/{{json.numero}}/5"><input type="button" class="dropdown-item" value="Manzana 5" id="manzana5"/></a>
+            <a href="/territorios/{{json.numero}}/6"><input type="button" class="dropdown-item" value="Manzana 6" id="manzana6"/></a>
+          </div>
+        </div>
+        
+        <br />
+        
+        <div class="dropdown" style="display:block; margin-right:10%;">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:180px; display:block; margin:auto; font-size:0.9rem;" id="ddViendo">
+            Viendo {{json.ver}}
+          </button>
+          <div class="dropdown-menu" aria-labelledby="ddViendo">
+            <a href="/territorios/{{json.numero}}/{{json.manzana}}"><input type="button" class="dropdown-item" value="Ver todos" id="manzana1"/></a>
+            <a href="/territorios/{{json.numero}}/{{json.manzana}}/nopred"><input type="button" class="dropdown-item" value="No Predicados" id="manzana2"/></a>
+          </div>
+        </div>
+
+        <br />
+
+        <div class="dropdown" style="display:block; margin-right:10%;">
+          <button class="btn btn-dark" type="button" style="width:180px; display:none; margin:auto; font-size:0.9rem;" id="addBtn" data-toggle="modal" data-target="#addModal"> Agregar una vivienda </button>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      let cantManzanas = {{json.cantManzanas}};
+      if (cantManzanas=='5') {
+        document.getElementById('manzana6').style.display = 'none';
+      } else if (cantManzanas=='4') {
+        document.getElementById('manzana6').style.display = 'none';
+        document.getElementById('manzana5').style.display = 'none';
+      } else if (cantManzanas=='3') {
+        document.getElementById('manzana6').style.display = 'none';
+        document.getElementById('manzana5').style.display = 'none';
+        document.getElementById('manzana4').style.display = 'none';
+      }
+    </script>
+
+
+    <div class="col" style="padding:0px; margin-top:50px;">
+      {{#each viviendas}}      
+        <br/>
+        <div class="card">
+          <div class="card-body" style="padding-top:15px; padding-botton:15px;">
+            <div class="row" style="margin-top:10px;">
+
+              <div class="col-lg-2" style="margin:auto;">
+                {{!-- <h6 style="text-align:center; color:#007bff; display:none;" onclick="editar()" id="editBtn">Editar <i class="fa fa-pencil"></i></h6> --}}
+                <h4 style="text-align:center; font-size:1.3rem;" id="terri"> Territorio {{territorio}} </h4>
+                {{!-- <input class="form-control" style="display:none;" type="text" name="terri" id="editTerri" value="Territorio {{territorio}}"> --}}
+                <h4 style="text-align:center; font-size:1.3rem;"> Manzana {{manzana}} </h4>
+                <h4 style="text-align:center; font-size:1.1rem;"> Vivienda {{inner_id}} </h4>
+              </div>
+
+              <div class="col-lg-4" style="margin-bottom:10px;">
+                <div class="row" style="padding-botton:20px;">
+                  <h4 style="text-align:center; display:block; margin:auto;"> Dirección:<br/> {{direccion}} </h4>
+                </div>
+                <div class="row" style="padding-top:20px; padding-bottom:1%;" id="telefono{{inner_id}}">
+                  <h4 style="text-align:center; display:block; margin:auto;"> Teléfono: <br/>
+                    <div style="margin-top: 7px;"> <a href="tel:{{telefono}}">+{{telefono}}</a> 
+                    </div>
+                  </h4>
+                </div>
+              </div>
+
+              <div class="col-lg-3">
+                <div class="row" style="text-align:center; height:50%">
+                  <span style="display:none;" id="invBtnModal"></span>
+                  <div class="dropdown2" style="display:block; margin:auto;">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="ddmb{{inner_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:180px; display:block; margin:auto; background-color:darkgray; border-color:darkgray;">
+                      {{estado}}
+                    </button>
+                    
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <input type="button" class="dropdown-item" value="No predicado" id="nopredicado{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'No predicado');enviarCambios({{inner_id}})" />
+                      <input type="button" class="dropdown-item" value="Contestó" id="contesto{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'Contestó');enviarCambios({{inner_id}})" />
+                      <input type="button" class="dropdown-item" value="Msj en contestador" id="contestador{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'Msj en contestador');enviarCambios({{inner_id}})" />
+                      <input type="button" class="dropdown-item" value="No contestó" id="nocontesto{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'No contestó');enviarCambios({{inner_id}})" />
+                      <input type="button" class="dropdown-item" value="Revisita" id="revisita{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'Revisita');enviarCambios({{inner_id}})" />
+                      {{!-- <input type="button" class="dropdown-item" value="No abonado en serv" id="noabonado{{inner_id}}"
+                              onclick="ddmb({{inner_id}}, 'No abonado en serv')"/> --}}
+                      <input type="button" class="dropdown-item" value="A dejar carta" id="nocontesto{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'A dejar carta');enviarCambios({{inner_id}})" />
+                      <input type="button" class="dropdown-item" value="No llamar" id="nollamar{{inner_id}}"
+                          onclick="actualizarBoton({{inner_id}},'No llamar');enviarCambios({{inner_id}})" />
+                    </div>
+                  </div>
+                </div>
+
+                
+                <div class="row" style="height:50%">
+                  <div class="card border-dark mb-3" style="max-width:18rem; background-color:rgb(214, 214, 214); display:none; margin:auto;" id="cardDate{{inner_id}}">
+                    <div class="card-header" style="padding:0.2rem 0.5rem">
+                      <p class="card-text">
+                        <span> Se llamó el <span id="timestamp{{inner_id}}" style="display:none;">{{fechaUlt}}</span> <span id="inyectFecha{{inner_id}}"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-lg-3">
+
+                <div class="row" style="text-align:center; height:35%;">
+                  <div class="form-check" style="display:block; margin:auto; margin-bottom:15px;">
+                    <input class="form-check-input" type="checkbox" value="" id="checkbox{{inner_id}}" style="margin-top:0.5rem; transform:scale(1.5); padding: 5px; margin-left:0rem;" onclick="cambioCheckbox({{inner_id}});enviarCambios({{inner_id}})">
+                    <label class="form-check-label" for="defaultCheck1" style="font-size:1.1rem; font-weight:500;">
+                      &nbsp; &nbsp; Teléfono no abonado en servicio
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row" style="text-align:center; height:65%; margin-top:0px;">
+                  <div class="col-lg-12" style="padding:0px;">
+                    <textarea name="{{inner_id}}" cols="25" rows="3" style="display:block; margin-left:auto; margin-right:auto; margin-top:12px; max-width:100%; padding:5px; padding-left:10px;" id="textarea{{inner_id}}" placeholder="Observaciones..." onchange="enviarCambios('{{inner_id}}')" maxlength="300"> {{observaciones}} </textarea>
+                  </div>
+
+                  <script>
+                    vivienda = {{inner_id}};
+                    ddmb = "ddmb" + vivienda;
+                    estadoInicial = document.getElementById(ddmb).innerText.trim();
+                    colores(ddmb, estadoInicial)
+
+                    timestamp = "timestamp" + vivienda;
+                    timest = document.getElementById(timestamp).innerText.trim();
+                    ponerFecha(vivienda, timest);
+
+                    ta = "textarea" + {{inner_id}};
+                    if (document.getElementById(ta).value=="  ") { document.getElementById(ta).value=""; };
+
+                    try {
+                      estadoCheckbox (vivienda, {{noAbonado}});
+                    } catch(e) {};
+
+                    if (cuadras.includes('{{cuadra_id}}')==false) {
+                      cuadras.push('{{cuadra_id}}');
+                      Cuadras.push('{{direccion}}');
+                    };
+
+                  </script>
+
+                  {{!-- <div class="col-lg-4" style="padding-left:0px;">
+                    <button class="btn btn-dark" style="max-width:100%; display:block; margin:auto; font-size:0.7rem; margin-top: 10px;" id="taBtn{{inner_id}}">Ok!</button>
+                  </div> --}}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {{/each}}
+    </div>
+    <div class="row" style="padding:60px; padding-top:40px;">
+    </div>
+    <div class="col-lg-4"></div>
+    <div class="col-lg-3"></div>
+  </div>
+</div>
+
+
+
+{{!-- <script type="text/javascript" src="/js/territorios.js"></script> --}}
+
+
+<script>
+  if (role==1) {
+    document.getElementById('addBtn').style.display = 'block';
+  }
+</script>
+
+
+
+
+  <!-- Modal -->
+          
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"> Agregar una vivienda </h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <h4 style="text-align:center;"> Territorio {{json.numero}} - Manzana {{json.manzana}} </h4>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="modalFormWrapper">
+                
+                <div class="form-group">
+                  <label for="formName"> Dirección con piso, depto, timbre: </label>
+                  <input type="text" class="form-control" name="formAgregar" placeholder="Dirección" required id="addDireccion">
+                </div>
+
+                <div class="form-group">
+                  <label for="formName"> Teléfono: </label>
+                  <input type="text" class="form-control" name="formAgregar" placeholder="Teléfono" value="54-11-" id="addTelefono">
+                </div>
+
+                <div class="form-group">
+                  <label for="formName"> Estado: </label>
+                  <div class="row" style="text-align:center; height:50%">
+                    <div class="dropdown2" style="display:block; margin:auto;">
+                      <button type="button" class="btn btn-dark dropdown-toggle" id="ddBtnAdd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:250px; display:block; margin:auto; background-color:darkgray; border-color:darkgray;" name="formAgregar" value="No predicado">No predicado</button>
+                      <div class="dropdown-menu" aria-labelledby="ddBtnAdd">
+                        <input type="button" class="dropdown-item" value="No predicado" onclick="ddmbEdit('No predicado')">
+                        <input type="button" class="dropdown-item" value="Contestó" onclick="ddmbEdit('Contestó')">
+                        <input type="button" class="dropdown-item" value="Msj en contestador" onclick="ddmbEdit('Msj en contestador')">
+                        <input type="button" class="dropdown-item" value="No contestó" onclick="ddmbEdit('No contestó')">
+                        <input type="button" class="dropdown-item" value="Revisita" onclick="ddmbEdit('Revisita')">
+                        <input type="button" class="dropdown-item" value="A dejar carta" onclick="ddmbEdit('A dejar carta')">
+                        <input type="button" class="dropdown-item" value="No llamar" onclick="ddmbEdit('No llamar')">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="formName"> Cuadra: </label>
+                  <div class="row" style="text-align:center; height:50%">
+                    <div class="dropdown2" style="display:block; margin:auto;">
+                      <button type="button" class="btn btn-dark dropdown-toggle" id="ddAddCuadra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:250px; display:block; margin:auto;" name="formAgregar" value=""></button>
+
+                      <div class="dropdown-menu" aria-labelledby="ddBtnAdd">
+                        <input type="button" class="dropdown-item" value="" onclick="addCuadra(this.value)" id="op1">
+                        <input type="button" class="dropdown-item" value="" onclick="addCuadra(this.value)" id="op2">
+                        <input type="button" class="dropdown-item" value="" onclick="addCuadra(this.value)" id="op3">
+                        <input type="button" class="dropdown-item" value="" onclick="addCuadra(this.value)" id="op4">
+                        <input type="button" class="dropdown-item" value="" onclick="addCuadra(this.value)" id="op5">
+                      </div>
+                    </div>
+                  </div>
+
+                  <script>
+                    //document.getElementById('ddAddCuadra').innerText = "(" + cuadras[0] + ") - " + Cuadras[0];
+                    document.getElementById('op1').value = "(" + cuadras[0] + ") " + Cuadras[0];
+                    document.getElementById('op2').value = "(" + cuadras[1] + ") " + Cuadras[1];
+                    document.getElementById('op3').value = "(" + cuadras[2] + ") " + Cuadras[2];
+                    document.getElementById('op4').value = "(" + cuadras[3] + ") " + Cuadras[3];
+                    document.getElementById('op5').value = "(999) OTRA";
+                  </script>
+
+                </div>
+
+                <div class="form-group">
+                  <label for="formName"> Observaciones: </label>
+                  <textarea name="formAgregar" cols="40" rows="2" style="display:block; margin-left:auto; margin-right:auto; margin-top:12px; max-width:100%; padding:5px; padding-left:10px;" id="textarea" placeholder="Observaciones..." value="" maxlength="300"></textarea>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Salir Sin Guardar </button>
+        <button class="btn btn-primary" onclick="enviarAgregarVivienda()"> GUARDAR CAMBIOS </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  function enviarAgregarVivienda() {
+
+    let cuadra_id = document.getElementById('ddAddCuadra').innerText.trim()
+    let pos = cuadra_id.indexOf(')');
+    cuadra_id = cuadra_id.substr(1,pos)
+    console.log(cuadra_id)
+
+    let nuevaViv = {
+      direccion: document.getElementById('addDireccion').value.trim(),
+      telefono: document.getElementById('addTelefono').value.trim(),
+      estado: document.getElementById('ddBtnAdd').innerText.trim(),
+      territorio: ('{{json.numero}}'),
+      manzana: ('{{json.manzana}}'),
+      cuadra_id,
+      observaciones: document.getElementById('textarea').value.trim(),
+      fechaUlt: Date.now(),
+    };
+
+    fetch('/agregarVivienda', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(nuevaViv)
+    })
+    .then( response => {
+      console.log(response)
+      if (response.status==200) {
+        alert("¡Vivienda agregada con éxito!");
+        location.reload();
+      }
+    })
+    .catch( error => {
+      alert("Falló la carga de vivienda nueva " + e)
+      console.log(error);
+    });
+
+  }
+</script>
+
+
