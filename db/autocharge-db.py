@@ -1,8 +1,18 @@
 import pymongo
 import pandas as pd
+import json
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["lumen2"]
+with open('../env.json') as envJSON:
+	env = json.load(envJSON)
+
+print(json.dumps(env, indent = 4, sort_keys=True))
+DB = env["DB"]
+print (DB)
+
+myclient = pymongo.MongoClient(DB)
+mydb = myclient["misericordia-web"]
+
+print(myclient)
 
 data = pd.read_excel('territorios-todo.xlsx', encoding='UTF8')
 

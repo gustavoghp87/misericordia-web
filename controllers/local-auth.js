@@ -49,7 +49,7 @@ passport.use('local-signin', new LocalStrategy({
     passReqToCallback: true
 }, async (req, email, password, done) => {
     const user = await User.findOne({email:email});
-    console.log("USER EN LOGIN:", user)
+    console.log(`USER EN LOGIN: ${user.email}\n\n`);
     if (!user) {
         return done(null, false, req.flash('signinMessage', 'El correo fue mal escrito o no está registrado'));
     }

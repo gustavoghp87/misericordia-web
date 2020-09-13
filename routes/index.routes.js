@@ -15,10 +15,7 @@ router.get('/', async (req, res) => {
     res.redirect('login');
 });
 
-
-//////////   registro
-
-router.get('/register', async (req, res) => {
+router.get('/register', async (_, res) => {
   res.render('register');
 });
 
@@ -31,6 +28,8 @@ router.post('/register', (req, res, next) => {
     const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${respon}&remoteip=${req.connection.remoteAddress}`;
   
     request(verifyURL, (err, response, body) => {
+      if (err) {console.log(err); return res.json({"success": false, "msg": "Captcha no verificado"})};
+      if (response) console.log(response);
       body = JSON.parse(body);
       //console.log(body);
       if (body.success != undefined && !body.success) {
@@ -50,11 +49,7 @@ router.post('/register', passport.authenticate('local-signup', {
   passReqToCallback: true
 }));
 
-
-
-//////////   ingreso
-
-router.get('/login', async (req, res) => {
+router.get('/login', async (_, res) => {
   res.render('login');
 })
 
@@ -63,17 +58,18 @@ router.post('/login', (req, res, next) => {
     const obj = JSON.parse(JSON.stringify(req.body));  
     const secretKey = env.secretKeyRecaptcha;
     const respon = obj['g-recaptcha-response'];
-  
     const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${respon}&remoteip=${req.connection.remoteAddress}`;
   
     request(verifyURL, (err, response, body) => {
+      if (err) {console.log(err); return res.json({success: false, msg: "Captcha no verificado"})};
+      if (response) console.log("");
       body = JSON.parse(body);
       //console.log(body);
   
       if (body.success != undefined && !body.success) {
         return res.json({"success": false, "msg": "Captcha no verificado"});
       } else {
-        console.log("ok captcha reg")
+        console.log(`Ok recaptcha reg ${req.body.email} - ${new Date()}`);
         next();
       }
     });
@@ -92,9 +88,6 @@ router.get('/logout', (req, res, next) => {
   res.redirect('/');
 })
 
-
-///////////  index
-
 router.get('/territorios', async (req, res, next) => {
   if (req.isAuthenticated())
     return next();
@@ -103,17 +96,17 @@ router.get('/territorios', async (req, res, next) => {
 
 router.get('/territorios', async (req, res) => {
   //console.log(req.user)
+  let habilitados = []
+  for (let i = 0; i < 56; i++) {
+    habilitados.push({habilitados:i+1});
+  }
   let json = {user: req.user.email, role: req.user.role}
   
   if (req.user.estado=="activado")
-    res.render('index', {json});
+    res.render('index', {json, habilitados});
   else
     req.send("Usuario no autorizado")
 });
-
-
-
-///////////   territorios
 
 router.get('/territorios/:terri/:manzana', async (req, res, next) => {
   if (req.isAuthenticated())
@@ -285,16 +278,11 @@ router.get('/territorios/:terri/:manzana', async (req, res) => {
   res.render('territorios', {viviendas, json});
 });
 
-
-
-//////////   territorios filtrados
-
 router.get('/territorios/:terri/:manzana/nopred', async (req, res, next) => {
   if (req.isAuthenticated())
     return next();
   res.redirect('/login');
 });
-
 
 router.get('/territorios/:terri/:manzana/nopred', async (req, res) => {
   //console.log(req.params)
@@ -336,10 +324,6 @@ router.get('/territorios/:terri/:manzana/nopred', async (req, res) => {
   console.log("ok")
   res.render('territorios', {viviendas, json});
 });
-
-
-
-/////////  ESTADÍSTICAS GLOBALES
 
 router.get('/estadisticas', async (req, res, next) => {
   if (req.isAuthenticated())
@@ -386,13 +370,6 @@ router.get('/estadisticas', async (req, res) => {
   res.render('estadisticas', {json});
 
 });
-
-
-
-
-
-////////////  ESTADÍSTICAS POR TERRITORIO
-
 
 router.get('/estadisticas/:terri', async (req, res, next) => {
   if (req.isAuthenticated())
@@ -451,13 +428,6 @@ router.get('/estadisticas/:terri', async (req, res) => {
   res.render('estadisticas', {json});
 });
 
-router.get('*', (req, res) => {
-  res.end('Seccion no encontrada');
-})
-
-
-
-
 router.post('/agregarVivienda', async (req, res, next) => {
   if (req.isAuthenticated() && req.user.role==1)
     return next();
@@ -486,5 +456,28 @@ router.post('/agregarVivienda', async (req, res) => {
   res.status(200).send("All right");
 });
 
+router.get('/revisitas', async (req, res, next) => {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/login');
+});
+
+router.get('/revisitas', async (req, res) => {
+  const viviendas = await Vivienda.find({estado:"Revisita"});
+  console.log(viviendas);
+
+  let json = {
+    user: req.user.email,
+    role: req.user.role,
+    viviendas,
+    numero: "revisitas"
+  }
+
+  res.render('territorios', {viviendas, json});
+});
+
+router.get('*', (_, res) => {
+  res.send("Sección no encontrada...");
+});
 
 module.exports = router;
