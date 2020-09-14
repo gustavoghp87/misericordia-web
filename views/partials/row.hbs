@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4" style="display:block; margin:auto;">
+        <a href="/territorios" type="button" class="btn btn-warning" style="border-radius:10px;display:none; margin:auto; width:200px; height:40px; color:white;" id="volverTerritorios"> Volver al Inicio </a>
+        <br/>
+        <a href="/estadisticas" type="button" class="btn btn-dark" style="display:none; margin:auto; border-radius:10px;" id="btnEstadisticasGlob"> Ver estadísticas globales </a>
+        <br>
+        <a href="/revisitas" type="button" class="btn btn-warning" style="display:none; margin:auto; border-radius:10px; color:white;" id="btnRevisitas"> Ver revisitas </a>
+        <a href="/estadisticas/{{json.numero}}" type="button" class="btn btn-dark" style="display:none; margin:auto; margin-bottom:12px; border-radius:10px;" id="btnEstadisticas"> Ver estadísticas del territorio {{json.numero}} </a>
+        <a href="/territorios/{{json.numero}}/1" type="button" class="btn btn-warning" style="display:none; margin:auto; width:200px; border-radius:10px; color:white; height:40px;" id="btnVolver"> Volver al Territorio {{json.numero}} </a>
+    </div>
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-9">
+                <div style="margin-right:10%;">
+                <p class="fontsforweb_fontid_77695" style="font-size:1.2rem !important; margin:0; text-align:end;" id="userNav">
+                    {{json.user}}
+                </p>
+                <p class="fontsforweb_fontid_77695" style="font-size:1.2rem !important; margin:0; text-align:end;" id="groupNav">
+                    Grupo {{ user.group }} 
+                </p>
+                <p class="fontsforweb_fontid_77695" style="display:none; font-size:1.2rem !important; text-align:end; margin-bottom:0px !important" id="roleNav"> </p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+
+    </div>
+</div>

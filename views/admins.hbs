@@ -1,0 +1,77 @@
+<div class="container">
+    <h1> USUARIOS </h1>
+    {{#each users}}
+        <h4> {{email}} </h4>
+        <h5 id="rol{{@index}}">
+            Rol: {{role}}
+            <button class="btn btn-info" style="display:none" onclick="hacerAdmin{{@index}}()" id="hacerAdmin{{@index}}"> HACER ADMINISTRADOR </button>
+            <button class="btn btn-warning" style="display:none" onclick="deshacerAdmin{{@index}}()" id="deshacerAdmin{{@index}}"> QUITAR ADMINISTRADOR </button>
+        </h5>
+        <h5 id="estado{{@index}}">
+            Estado: {{estado}}
+            <button class="btn btn-info" style="display:none" onclick="activar{{@index}}()" id="activar{{@index}}"> ACTIVAR </button>
+            <button class="btn btn-warning"style="display:none" onclick="desactivar{{@index}}()" id="desactivar{{@index}}"> DESACTIVAR </button>
+        </h5>
+        <br/>
+
+        <script>
+            if (document.getElementById('estado{{@index}}').innerText.trim()=="Estado: desactivado")
+                document.getElementById('activar{{@index}}').style.display = "inline";
+            const activar{{@index}} = () => {
+                let confirm{{@index}} = confirm("¿Activar a {{email}}?");
+                if (confirm{{@index}}) {
+                    socket.emit('usuarios:activar', {email:"{{email}}"});
+                };
+            };
+
+            if (document.getElementById('estado{{@index}}').innerText.trim()=="Estado: activado")
+                document.getElementById('desactivar{{@index}}').style.display = "inline";
+            const desactivar{{@index}} = () => {
+                let confirm2{{@index}} = confirm("¿Desactivar a {{email}}?");
+                if (confirm2{{@index}}) {
+                    socket.emit('usuarios:desactivar', {email:"{{email}}"});
+                };
+            };
+
+            if (document.getElementById('rol{{@index}}').innerText.trim()=="Rol: 0")
+                document.getElementById('hacerAdmin{{@index}}').style.display = "inline";
+            const hacerAdmin{{@index}} = () => {
+                let confirm3{{@index}} = confirm("¿Hacer administrador a {{email}}?");
+                if (confirm3{{@index}}) {
+                    socket.emit('usuarios:hacerAdmin', {email:"{{email}}"});
+                };
+            };
+
+            if (document.getElementById('rol{{@index}}').innerText.trim()=="Rol: 1")
+                document.getElementById('deshacerAdmin{{@index}}').style.display = "inline";
+            const deshacerAdmin{{@index}} = () => {
+                let confirm4{{@index}} = confirm("¿Quitar de administradores a {{email}}?");
+                if (confirm4{{@index}}) {
+                    socket.emit('usuarios:deshacerAdmin', {email:"{{email}}"});
+                };
+            };
+
+        </script>
+
+    {{/each}}
+
+    <script>
+        socket.on('usuarios:activar', (data) => {
+            alert(`Usuario activado: ${data.activado}`);
+            location.reload();
+        });
+        socket.on('usuarios:desactivar', (data) => {
+            alert(`Usuario desactivado: ${data.desactivado}`);
+            location.reload();
+        });
+        socket.on('usuarios:hacerAdmin', (data) => {
+            alert(`Usuario hecho administrador: ${data.activado}`);
+            location.reload();
+        });
+        socket.on('usuarios:deshacerAdmin', (data) => {
+            alert(`Usuario quitado de administrador: ${data.desactivado}`);
+            location.reload();
+        });
+    </script>
+
+</div>

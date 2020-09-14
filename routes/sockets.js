@@ -4,7 +4,6 @@ const User = require('../model/User');
 const server = require('../server');
 const io = SocketIO(server);
 
-
 io.on('connection', async (socket) => {
   console.log('new connection', socket.id);
 
@@ -67,8 +66,58 @@ io.on('connection', async (socket) => {
       nextTerr: i + 1
     }
     socket.emit('estadisticas:globales', terri)
-  })
+  });
+
+  socket.on('usuarios:activar', async (data) => {
+    //console.log("DATA:", data)
+    await User.updateOne({email:data.email}, {estado:"activado"}, (err, success) => {
+      if (err) console.log(`Error al intentar activar a ${data.email}`, err);
+      else {
+        console.log("\n\nÉxito en activar:", data.email, success, "\n");
+        socket.emit('usuarios:activar', {
+          activado: data.email
+        });
+      };
+    })
+  });
+
+  socket.on('usuarios:desactivar', async (data) => {
+    //console.log("DATA:", data)
+    await User.updateOne({email:data.email}, {estado:"desactivado"}, (err, success) => {
+      if (err) console.log(`Error al intentar desactivar a ${data.email}`, err);
+      else {
+        console.log("\n\nÉxito en desactivar:", data.email, success, "\n");
+        socket.emit('usuarios:desactivar', {
+          desactivado: data.email
+        });
+      };
+    })
+  });
+
+  socket.on('usuarios:hacerAdmin', async (data) => {
+    //console.log("DATA:", data)
+    await User.updateOne({email:data.email}, {role:1}, (err, success) => {
+      if (err) console.log(`Error al intentar hacer administrador a ${data.email}`, err);
+      else {
+        console.log("\n\nÉxito en hacer administrador:", data.email, success, "\n");
+        socket.emit('usuarios:hacerAdmin', {
+          activado: data.email
+        });
+      };
+    })
+  });
+
+  socket.on('usuarios:deshacerAdmin', async (data) => {
+    //console.log("DATA:", data)
+    await User.updateOne({email:data.email}, {role:0}, (err, success) => {
+      if (err) console.log(`Error al intentar quitar de administrador a ${data.email}`, err);
+      else {
+        console.log("\n\nÉxito en quitar de administrador:", data.email, success, "\n");
+        socket.emit('usuarios:deshacerAdmin', {
+          desactivado: data.email
+        });
+      };
+    })
+  });
 
 });
-
-module.exports = io;

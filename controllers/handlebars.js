@@ -2,7 +2,6 @@ const exphbs = require('express-handlebars');
 const Handlebars = require('handlebars');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const path = require('path');
-const app = require('../server');
 
 const hbsController = (app) => exphbs({
     defaultLayout: 'main',

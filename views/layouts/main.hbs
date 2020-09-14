@@ -25,51 +25,12 @@
     <script>const socket = io();</script>
     <div class="container main">
 
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4" style="height:70px !important;
-       background-color:#3b5998 !important; padding-top:12px !important; justify-content:space-between; margin-bottom:10px !important;">
-        <a class="navbar-brand fontsforweb_fontid_77695" href="/" style="margin-left:7%;">
-          <b>Misericordia Web</b>
-        </a>
-        <a class="navbar-brand fontsforweb_fontid_77695" href="/logout" style="margin-right:9%; font-size:1.7rem;" id="salir">
-          <b>Cerrar sesión</b>
-        </a>
-      </nav>
+      {{>navbar2}}
 
-      <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4" style="display:block; margin:auto;">
-          <a href="/territorios" type="button" class="btn btn-warning" style="border-radius:10px;display:none; margin:auto; width:200px; height:40px; color:white;" id="volverTerritorios">Volver al Inicio</a>
-          <br/>
-          <a href="/estadisticas" type="button" class="btn btn-dark" style="display:none; margin:auto; border-radius:10px;" id="btnEstadisticasGlob">Ver estadísticas globales</a>
-          <br>
-          <a href="/revisitas" type="button" class="btn btn-warning" style="display:none; margin:auto; border-radius:10px; color:white;" id="btnRevisitas"> Ver revisitas </a>
-          <a href="/estadisticas/{{json.numero}}" type="button" class="btn btn-dark" style="display:none; margin:auto; margin-bottom:12px; border-radius:10px;" id="btnEstadisticas">Ver estadísticas del territorio {{ json.numero }}</a>
-          <a href="/territorios/{{json.numero}}/1" type="button" class="btn btn-warning" style="display:none; margin:auto; width:200px; border-radius:10px; color:white; height:40px;" id="btnVolver">Volver al Territorio {{json.numero}}</a>
-        </div>
-        <div class="col-lg-4">
-          <div class="row">
-            <div class="col-lg-9">
-              <div style="margin-right:10%;">
-                <p class="fontsforweb_fontid_77695" style="font-size:1.2rem !important; margin:0; text-align:end;" id="userNav">
-                  {{ json.user }}
-                </p>
-                <p class="fontsforweb_fontid_77695" style="font-size:1.2rem !important; margin:0; text-align:end;" id="groupNav">
-                  Grupo {{ user.group }} 
-                </p>
-                <p class="fontsforweb_fontid_77695" style="display:none; font-size:1.2rem !important; text-align:end; margin-bottom:0px !important" id="roleNav"> </p>
-              </div>
-            </div>
-            <div class="col-lg-3">
-
-            </div>
-          </div>
-
-        </div>
-      </div>
+      {{>row}}
 
       <p style="display:none;" id="userEmail"> {{ json.user }} </p>
       <p style="display:none;" id="user.role"> {{ json.role }} </p>
-
 
 
       <script>
@@ -103,10 +64,6 @@
       </script>  
         
 
-
-
-
-
       {{#if registerMessage }}
         <div class="alert alert-danger" role="alert" style="text-align:center; font-weight:600;"> ¡{{ registerMessage }} ! </div>
       {{/if }}
@@ -124,16 +81,18 @@
 
 
       <footer class="page-footer font-small teal pt-4" style="padding-top:0px !important;">
-
         <div class="footer-copyright text-center py-3" style="background-color:rgba(0, 0, 0, 0.87); color:blanchedalmond; padding-bottom:5px !important;" >
-            <p> © 2020 Copyright:
-              <a href="https://www.misericordiaweb.com"> misericordiaweb.com</a>
+            <p>
+              <a href="https://www.misericordiaweb.com"></a>
+              <a href="/admins" style="display:none;" id="admin"> ADMINISTRACIÓN </a>
             </p>
+            <script>
+              const role = "{{json.role}}";
+              if(role==1) document.getElementById('admin').style.display="block";
+            </script>
         </div>
-
       </footer>
 
-    </div>    <!-- close div .container -->
-
+    </div>
   </body>
 </html>

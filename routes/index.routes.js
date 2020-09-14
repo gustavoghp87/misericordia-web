@@ -70,7 +70,7 @@ router.post('/login', (req, res, next) => {
         return res.json({"success": false, "msg": "Captcha no verificado"});
       } else {
         console.log(`Ok recaptcha reg ${req.body.email} - ${new Date()}`);
-        next();
+        return next();
       }
     });
 
@@ -83,10 +83,21 @@ router.post('/login', passport.authenticate('local-signin', {
   passReqToCallback: true
 }));
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', (req, res) => {
   req.logOut();
   res.redirect('/');
-})
+});
+
+router.get('/admins', async (req, res) => {
+  console.log(`Ingresa en ADMIN: ${req.user.email}`);
+  if (req.isAuthenticated() && req.user.role==1) {
+    const users = await User.find();
+    console.log(typeof users);
+    res.render('admins', {users})
+  } else {
+    res.redirect('/login');
+  }
+});
 
 router.get('/territorios', async (req, res, next) => {
   if (req.isAuthenticated())
@@ -137,133 +148,133 @@ router.get('/territorios/:terri/:manzana', async (req, res) => {
     cantManzanas = '3';
 
 
-  async function porCalle () {
-    let calles_1 = []
-    let calles_1_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'1'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_1.push(cuadra);
+  // async function porCalle () {
+  //   let calles_1 = []
+  //   let calles_1_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'1'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_1.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'1'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_1.includes(cuadra_) === false) calles_1.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_1_nom.includes(cuadra_nom) === false) calles_1_nom.push(cuadra_nom);
-      }
-    } catch(e) {} 
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'1'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_1.includes(cuadra_) === false) calles_1.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_1_nom.includes(cuadra_nom) === false) calles_1_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {} 
 
-    console.log("array 1", calles_1)
-    console.log("array 1", calles_1_nom)
+  //   console.log("array 1", calles_1)
+  //   console.log("array 1", calles_1_nom)
 
 
-    let calles_2 = []
-    let calles_2_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'2'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_2.push(cuadra);
+  //   let calles_2 = []
+  //   let calles_2_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'2'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_2.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'2'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_2.includes(cuadra_) === false) calles_2.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_2_nom.includes(cuadra_nom) === false) calles_2_nom.push(cuadra_nom);
-      }
-    } catch(e) {} 
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'2'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_2.includes(cuadra_) === false) calles_2.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_2_nom.includes(cuadra_nom) === false) calles_2_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {} 
 
-    console.log("array 2", calles_2)
-    console.log("array 2", calles_2_nom)
+  //   console.log("array 2", calles_2)
+  //   console.log("array 2", calles_2_nom)
 
 
-    let calles_3 = []
-    let calles_3_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'3'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_3.push(cuadra);
+  //   let calles_3 = []
+  //   let calles_3_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'3'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_3.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'3'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_3.includes(cuadra_) === false) calles_3.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_3_nom.includes(cuadra_nom) === false) calles_3_nom.push(cuadra_nom);
-      }
-    } catch(e) {} 
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'3'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_3.includes(cuadra_) === false) calles_3.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_3_nom.includes(cuadra_nom) === false) calles_3_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {} 
 
-    console.log("array 3", calles_3)
-    console.log("array 3", calles_3_nom)
+  //   console.log("array 3", calles_3)
+  //   console.log("array 3", calles_3_nom)
 
 
-    let calles_4 = []
-    let calles_4_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'4'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_4.push(cuadra);
+  //   let calles_4 = []
+  //   let calles_4_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'4'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_4.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'4'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_4.includes(cuadra_) === false) calles_4.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_4_nom.includes(cuadra_nom) === false) calles_4_nom.push(cuadra_nom);
-      }
-    } catch(e) {} 
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'4'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_4.includes(cuadra_) === false) calles_4.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_4_nom.includes(cuadra_nom) === false) calles_4_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {} 
 
-    console.log("array 4", calles_4)
-    console.log("array 4", calles_4_nom)
+  //   console.log("array 4", calles_4)
+  //   console.log("array 4", calles_4_nom)
 
 
-    let calles_5 = []
-    let calles_5_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'5'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_5.push(cuadra);
+  //   let calles_5 = []
+  //   let calles_5_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'5'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_5.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'5'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_5.includes(cuadra_) === false) calles_5.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_5_nom.includes(cuadra_nom) === false) calles_5_nom.push(cuadra_nom);
-      }
-    } catch(e) {} 
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'5'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_5.includes(cuadra_) === false) calles_5.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_5_nom.includes(cuadra_nom) === false) calles_5_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {} 
 
-    console.log("array 5", calles_5)
-    console.log("array 5", calles_5_nom)
+  //   console.log("array 5", calles_5)
+  //   console.log("array 5", calles_5_nom)
 
 
-    let calles_6 = []
-    let calles_6_nom = []
-    var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'6'}] });
-    try {
-      let cuadra = primera.cuadra_id;
-      calles_6.push(cuadra);
+  //   let calles_6 = []
+  //   let calles_6_nom = []
+  //   var primera = await Vivienda.findOne({$and: [{territorio:nu}, {manzana:'6'}] });
+  //   try {
+  //     let cuadra = primera.cuadra_id;
+  //     calles_6.push(cuadra);
     
-      for (i=0; i<5; i++) {
-        let Cuadra = parseInt(cuadra) + i;
-        let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'6'}] });
-        cuadra_ = segundas.cuadra_id;
-        if (calles_6.includes(cuadra_) === false) calles_6.push(cuadra_);
-        cuadra_nom = segundas.direccion.slice(0, 7);
-        if (calles_6_nom.includes(cuadra_nom) === false) calles_6_nom.push(cuadra_nom);
-      }
-    } catch(e) {}
+  //     for (i=0; i<5; i++) {
+  //       let Cuadra = parseInt(cuadra) + i;
+  //       let segundas = await Vivienda.findOne({$and: [{cuadra_id: Cuadra}, {manzana:'6'}] });
+  //       cuadra_ = segundas.cuadra_id;
+  //       if (calles_6.includes(cuadra_) === false) calles_6.push(cuadra_);
+  //       cuadra_nom = segundas.direccion.slice(0, 7);
+  //       if (calles_6_nom.includes(cuadra_nom) === false) calles_6_nom.push(cuadra_nom);
+  //     }
+  //   } catch(e) {}
 
-    console.log("array 6", calles_6)
-    console.log("array 6", calles_6_nom)
+  //   console.log("array 6", calles_6)
+  //   console.log("array 6", calles_6_nom)
 
-  };
+  // };
 
   
   let json = {
