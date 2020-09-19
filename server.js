@@ -19,11 +19,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 const sessionAndFlash = require('./controllers/sessionAndFlash');
 sessionAndFlash(app);
-
 app.use(express.urlencoded({extended: false}));
 
 //static files
-app.use(express.static(__dirname + '/frontend-src'));
+app.use(express.static(path.join(__dirname, 'frontend-src')));
 
 // routes
 app.use(require('./routes/index.routes'));
