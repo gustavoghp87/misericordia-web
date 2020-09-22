@@ -65,7 +65,7 @@ io.on('connection', async (socket) => {
       cantCartas,
       nextTerr: i + 1
     }
-    socket.emit('estadisticas:globales', terri)
+    socket.emit('estadisticas:globales', terri);
   });
 
   socket.on('usuarios:activar', async (data) => {
@@ -74,9 +74,7 @@ io.on('connection', async (socket) => {
       if (err) console.log(`Error al intentar activar a ${data.email}`, err);
       else {
         console.log("\n\nÉxito en activar:", data.email, success, "\n");
-        socket.emit('usuarios:activar', {
-          activado: data.email
-        });
+        socket.emit('usuarios:activar', {activado: data.email});
       };
     })
   });
@@ -87,11 +85,9 @@ io.on('connection', async (socket) => {
       if (err) console.log(`Error al intentar desactivar a ${data.email}`, err);
       else {
         console.log("\n\nÉxito en desactivar:", data.email, success, "\n");
-        socket.emit('usuarios:desactivar', {
-          desactivado: data.email
-        });
+        socket.emit('usuarios:desactivar', {desactivado: data.email});
       };
-    })
+    });
   });
 
   socket.on('usuarios:hacerAdmin', async (data) => {
@@ -100,11 +96,9 @@ io.on('connection', async (socket) => {
       if (err) console.log(`Error al intentar hacer administrador a ${data.email}`, err);
       else {
         console.log("\n\nÉxito en hacer administrador:", data.email, success, "\n");
-        socket.emit('usuarios:hacerAdmin', {
-          activado: data.email
-        });
+        socket.emit('usuarios:hacerAdmin', {activado: data.email});
       };
-    })
+    });
   });
 
   socket.on('usuarios:deshacerAdmin', async (data) => {
@@ -113,9 +107,7 @@ io.on('connection', async (socket) => {
       if (err) console.log(`Error al intentar quitar de administrador a ${data.email}`, err);
       else {
         console.log("\n\nÉxito en quitar de administrador:", data.email, success, "\n");
-        socket.emit('usuarios:deshacerAdmin', {
-          desactivado: data.email
-        });
+        socket.emit('usuarios:deshacerAdmin', {desactivado: data.email});
       };
     })
   });

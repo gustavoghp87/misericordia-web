@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'frontend-src')));
 app.use(require('./routes/index.routes'));
 
 const server = app.listen(app.get('port'), () => {
-  console.log(`server on port ${app.get('port')}`);
+  console.log(`Server on port ${app.get('port')}`);
 });
 
 module.exports = server;
