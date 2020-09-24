@@ -47,7 +47,7 @@
 
         if (location.pathname=='/territorios' && role==1) {
           document.getElementById('btnEstadisticasGlob').style.display = 'block';
-          document.getElementById('btnRevisitas').style.display = 'block';
+          // document.getElementById('btnRevisitas').style.display = 'block';
         };
 
         if (location.pathname.slice(0,13)=='/territorios/' && role==1) {
@@ -61,7 +61,9 @@
         if (location.pathname.slice(0,14)=='/estadisticas/' && role==1) {
           document.getElementById('btnVolver').style.display = 'block';
         };
-      </script>  
+
+        // if (location.pathname=='/revisitas') {document.getElementById('btnEstadisticasGlob').style.display = 'none';};
+      </script>
         
 
       {{#if registerMessage }}

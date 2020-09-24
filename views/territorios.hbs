@@ -18,11 +18,11 @@
       Ddmb.style.backgroundColor = 'green';
       Ddmb.style.borderColor = 'green';
     } else if (estado == "No contestó") {
-      Ddmb.style.backgroundColor = 'blue';
-      Ddmb.style.borderColor = 'blue';
-    } else if (estado == "Contestó") {
       Ddmb.style.backgroundColor = '#ffa500';
       Ddmb.style.borderColor = '#ffa500';
+    } else if (estado == "Contestó") {
+      Ddmb.style.backgroundColor = 'blue';
+      Ddmb.style.borderColor = 'blue';
     } else if (estado == "Msj en contestador") {
       Ddmb.style.backgroundColor = 'red';
       Ddmb.style.borderColor = 'red';
@@ -99,8 +99,8 @@
   function enviarCambios(vivienda) {
     let ddmb = "ddmb" + vivienda;
     let estado = document.getElementById(ddmb).innerText.trim();
-    let textarea = "textarea" + vivienda;
-    let observaciones = document.getElementById(textarea).value.trim();
+    // let textarea = "textarea" + vivienda;
+    // let observaciones = document.getElementById(textarea).value.trim();
     let box = "checkbox" + vivienda;
     let noAbonado = document.getElementById(box).checked;
     let timest = "timestamp" + vivienda;
@@ -111,7 +111,6 @@
     socket.emit('vivienda:cambio', {
       vivienda: vivienda.toString(),
       estado,
-      observaciones,
       noAbonado,
       timestamp,
       email: '{{json.user}}'
@@ -129,9 +128,9 @@
     try {
       estadoCheckbox(data.vivienda, data.noAbonado)
     } catch(e) {};
-    
-      texta = "textarea" + data.vivienda;
-      document.getElementById(texta).value = data.observaciones;
+
+      // texta = "textarea" + data.vivienda;
+      // document.getElementById(texta).value = data.observaciones;
   });
 
 </script>
@@ -174,10 +173,10 @@
         <br />
         
         <div class="dropdown" style="display:block; margin-right:10%;">
-          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:180px; display:block; margin:auto; font-size:0.9rem;" id="ddViendo">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:180px; display:block; margin:auto; font-size:0.9rem;">
             Viendo {{json.ver}}
           </button>
-          <div class="dropdown-menu" aria-labelledby="ddViendo">
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuOrden">
             <a href="/territorios/{{json.numero}}/{{json.manzana}}"><input type="button" class="dropdown-item" value="Ver todos" id="manzana1"/></a>
             <a href="/territorios/{{json.numero}}/{{json.manzana}}/nopred"><input type="button" class="dropdown-item" value="No Predicados" id="manzana2"/></a>
           </div>
@@ -247,14 +246,11 @@
                           onclick="actualizarBoton({{inner_id}},'No predicado');enviarCambios({{inner_id}})" />
                       <input type="button" class="dropdown-item" value="Contestó" id="contesto{{inner_id}}"
                           onclick="actualizarBoton({{inner_id}},'Contestó');enviarCambios({{inner_id}})" />
-                      <input type="button" class="dropdown-item" value="Msj en contestador" id="contestador{{inner_id}}"
-                          onclick="actualizarBoton({{inner_id}},'Msj en contestador');enviarCambios({{inner_id}})" />
+
                       <input type="button" class="dropdown-item" value="No contestó" id="nocontesto{{inner_id}}"
                           onclick="actualizarBoton({{inner_id}},'No contestó');enviarCambios({{inner_id}})" />
-                      <input type="button" class="dropdown-item" value="Revisita" id="revisita{{inner_id}}"
-                          onclick="actualizarBoton({{inner_id}},'Revisita');enviarCambios({{inner_id}})" />
-                      {{!-- <input type="button" class="dropdown-item" value="No abonado en serv" id="noabonado{{inner_id}}"
-                              onclick="ddmb({{inner_id}}, 'No abonado en serv')"/> --}}
+
+
                       <input type="button" class="dropdown-item" value="A dejar carta" id="nocontesto{{inner_id}}"
                           onclick="actualizarBoton({{inner_id}},'A dejar carta');enviarCambios({{inner_id}})" />
                       <input type="button" class="dropdown-item" value="No llamar" id="nollamar{{inner_id}}"
@@ -278,8 +274,8 @@
 
               <div class="col-lg-3">
 
-                <div class="row" style="text-align:center; height:35%;">
-                  <div class="form-check" style="display:block; margin:auto; margin-bottom:15px;">
+                <div class="row" style="text-align:center; height:100%;">
+                  <div class="form-check" style="display:block; margin:auto;">
                     <input class="form-check-input" type="checkbox" value="" id="checkbox{{inner_id}}" style="margin-top:0.5rem; transform:scale(1.5); padding: 5px; margin-left:0rem;" onclick="cambioCheckbox({{inner_id}});enviarCambios({{inner_id}})">
                     <label class="form-check-label" for="defaultCheck1" style="font-size:1.1rem; font-weight:500;">
                       &nbsp; &nbsp; Teléfono no abonado en servicio
@@ -287,10 +283,10 @@
                   </div>
                 </div>
 
-                <div class="row" style="text-align:center; height:65%; margin-top:0px;">
-                  <div class="col-lg-12" style="padding:0px;">
-                    <textarea name="{{inner_id}}" cols="25" rows="3" style="display:block; margin-left:auto; margin-right:auto; margin-top:12px; max-width:100%; padding:5px; padding-left:10px;" id="textarea{{inner_id}}" placeholder="Observaciones..." onchange="enviarCambios('{{inner_id}}')" maxlength="300"> {{observaciones}} </textarea>
-                  </div>
+                {{!-- <div class="row" style="text-align:center; height:65%; margin-top:0px;"> --}}
+                  {{!-- <div class="col-lg-12" style="padding:0px;">
+                    <textarea name="inner_id" cols="25" rows="3" style="display:block; margin-left:auto; margin-right:auto; margin-top:12px; max-width:100%; padding:5px; padding-left:10px;" id="textareainner_id" placeholder="Observaciones..." onchange="('inner_id')" maxlength="300"> observaciones </textarea>
+                  </div> --}}
 
                   <script>
                     vivienda = {{inner_id}};
@@ -302,8 +298,8 @@
                     timest = document.getElementById(timestamp).innerText.trim();
                     ponerFecha(vivienda, timest);
 
-                    ta = "textarea" + {{inner_id}};
-                    if (document.getElementById(ta).value=="  ") { document.getElementById(ta).value=""; };
+                    // ta = "textarea" + {{inner_id}};
+                    //if (document.getElementById(ta).value=="  ") { document.getElementById(ta).value=""; };
 
                     try {
                       estadoCheckbox (vivienda, {{noAbonado}});
@@ -316,7 +312,7 @@
 
                   </script>
 
-                </div>
+                {{!-- </div> --}}
 
               </div>
             </div>
@@ -380,9 +376,8 @@
                       <div class="dropdown-menu" aria-labelledby="ddBtnAdd">
                         <input type="button" class="dropdown-item" value="No predicado" onclick="ddmbEdit('No predicado')">
                         <input type="button" class="dropdown-item" value="Contestó" onclick="ddmbEdit('Contestó')">
-                        <input type="button" class="dropdown-item" value="Msj en contestador" onclick="ddmbEdit('Msj en contestador')">
+
                         <input type="button" class="dropdown-item" value="No contestó" onclick="ddmbEdit('No contestó')">
-                        <input type="button" class="dropdown-item" value="Revisita" onclick="ddmbEdit('Revisita')">
                         <input type="button" class="dropdown-item" value="A dejar carta" onclick="ddmbEdit('A dejar carta')">
                         <input type="button" class="dropdown-item" value="No llamar" onclick="ddmbEdit('No llamar')">
                       </div>
@@ -417,10 +412,10 @@
 
                 </div>
 
-                <div class="form-group">
+                {{!-- <div class="form-group">
                   <label for="formName"> Observaciones: </label>
                   <textarea name="formAgregar" cols="40" rows="2" style="display:block; margin-left:auto; margin-right:auto; margin-top:12px; max-width:100%; padding:5px; padding-left:10px;" id="textarea" placeholder="Observaciones..." value="" maxlength="300"></textarea>
-                </div>
+                </div> --}}
 
               </div>
             </div>

@@ -1,6 +1,7 @@
 import pymongo
 import pandas as pd
 import json
+#pip3 install pymongo[srv]   probar con python2 y borrando "encoding"
 
 with open('../env.json') as envJSON:
 	env = json.load(envJSON)
@@ -10,7 +11,7 @@ DB = env["DB"]
 print (DB)
 
 myclient = pymongo.MongoClient(DB)
-mydb = myclient["misericordia-web"]
+mydb = myclient["Misericordia-Web"]
 
 print(myclient)
 
@@ -30,7 +31,6 @@ for i in data.index:
 
 	vivienda = {"inner_id": inner_id, "cuadra_id": cuadra_id, "territorio": territorio, "manzana": manzana, "direccion": direccion, "telefono": telefono, "estado": estado}
 
-	print("\n")
-	print(vivienda)
-	print("\n")
+	print("\n", vivienda, "\n")
+
 	mydb.viviendas.insert_one(vivienda)

@@ -11,18 +11,14 @@ io.on('connection', async (socket) => {
     console.log("Recibido en servidor,", data);
     
     let cambios = {
-      observaciones: data.observaciones,
       estado: data.estado,
-      observaciones: data.observaciones,
       fechaUlt: data.timestamp,
       noAbonado: data.noAbonado
     };
 
     let cambios2 = {
       inner_id: data.vivienda,
-      observaciones: data.observaciones,
       estado: data.estado,
-      observaciones: data.observaciones,
       fechaUlt: data.timestamp,
       noAbonado: data.noAbonado
     };
@@ -46,9 +42,9 @@ io.on('connection', async (socket) => {
     const noContesto = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:"No contestó"}]})).length;
     const limpio = noPred + noContesto;
     const limpioPC = (100*limpio/cant).toFixed(1)
-    const revisita = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:"Revisita"}]})).length;
+    // const revisita = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:"Revisita"}]})).length;
     const contestaron = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:'Contestó'}]})).length;
-    const contestador = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:'Msj en contestador'}]})).length;
+    // const contestador = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:'Msj en contestador'}]})).length;
     const cantCartas = (await Vivienda.find({$and:[{territorio:i.toString()},{estado:'A dejar carta'}]})).length;
 
     const terri = {
@@ -59,9 +55,7 @@ io.on('connection', async (socket) => {
       noContesto,
       limpio,
       limpioPC,
-      revisita,
       contestaron,
-      contestador,
       cantCartas,
       nextTerr: i + 1
     }

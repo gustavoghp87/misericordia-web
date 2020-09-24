@@ -25,9 +25,9 @@
       <h3 style="margin-right:20px;"> &nbsp; &nbsp; , de las cuales quedan sin predicar: {{ json.quedanGlob }} ({{json.porcNopredGlob}}%) </h3>
       <br />
       <h3 style="margin-right:20px;"> Contestaron: {{json.contestaronGlob}} </h3>
-      <h3 style="margin-right:20px;"> Se dejó mensaje en contestadora: {{json.contestadorGlob}} </h3>
+      {{!-- <h3 style="margin-right:20px;"> Se dejó mensaje en contestadora: {{json.contestadorGlob}} </h3> --}}
       <h3 style="margin-right:20px;"> Se dejaron cartas en: {{json.cantCartasGlob}}</h3>
-      <h3 style="margin-right:20px;"> Revisitas: {{json.cantReviGlob}} </h3>
+      {{!-- <h3 style="margin-right:20px;"> Revisitas: {{json.cantReviGlob}} </h3> --}}
       <h3 style="margin-right:20px;"> No llamar: {{json.cantNollamarGlob}} </h3>
       <h3 style="margin-right:20px;"> Se llamaron pero nadie atendió: {{json.noContestoGlob}} </h3>
       <h3 style="margin-right:20px;"> No abonados en servicio: {{json.cantNoabonGlob}} </h3>
@@ -108,9 +108,9 @@
             render += '<h3 style="font-size:2rem; color:darkblue;"> Restan predicar ' + data.limpio + ' (' + data.limpioPC + '%)</h3>'
             render += '<br>'
             render += '<h3> Contestaron: ' + data.contestaron + '</h3>'
-            render += '<h3> Se dejó mensaje en contestadora: ' + data.contestador + '</h3>'
+            // render += '<h3> Se dejó mensaje en contestadora: ' + data.contestador + '</h3>'
             render += '<h3> Se dejaron cartas en: ' + data.cantCartas + '</h3>'
-            render += '<h3> Revisitas: ' + data.revisita + '</h3>'
+            // render += '<h3> Revisitas: ' + data.revisita + '</h3>'
             render += '<h3> No llamar: ' + data.noLlamar + '</h3>'
             render += '<h3> Se llamaron pero nadie atendió: ' + data.noContesto + '</h3>'
             render += '<h3> No abonados en servicio: ' + data.noAbon + '</h3>'
@@ -136,9 +136,8 @@
         <h3 style="font-size:2rem; color:darkblue;"> Restan predicar {{limpio}} ({{limpioPC}}%)</h3>
         <br>
         <h3> Contestaron: {{contestaron}} </h3>
-        <h3> Se dejó mensaje en contestadora: {{contestador}} </h3>
+      
         <h3> Se dejaron cartas en: {{cantCartas}}</h3>
-        <h3> Revisitas: {{revisita}} </h3>
         <h3> No llamar: {{noLlamar}} </h3>
         <h3> Se llamaron pero nadie atendió: {{noContesto}} </h3>
         <h3> No abonados en servicio: {{noAbon}} </h3>
@@ -156,9 +155,9 @@
       <h3 style="margin-right:20px;"> &nbsp; &nbsp; , de las cuales quedan sin predicar: {{ json.cantNoPredTotal }} ({{json.porcNopred}}%) </h3>
       <br />
       <h3> Contestaron: {{json.cantContestaron}} </h3>
-      <h3> Se dejó mensaje en contestadora: {{json.cantContestador}} </h3>
+      {{!-- <h3> Se dejó mensaje en contestadora: {{json.cantContestador}} </h3> --}}
       <h3> Se dejaron cartas en: {{json.cantCartas}}</h3>
-      <h3 style="margin-right:20px;"> Revisitas: {{json.cantRevi}} </h3>
+      {{!-- <h3 style="margin-right:20px;"> Revisitas: {{json.cantRevi}} </h3> --}}
       <h3 style="margin-right:20px;"> No llamar: {{json.cantNollamar}} </h3>
       <h3 style="margin-right:20px;"> Los teléfonos no abonados en servicio son: {{json.cantNoabon}} </h3>
       <br />

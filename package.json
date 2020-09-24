@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gustavoghp87/lumen-web.git"
+    "url": "git+https://github.com/gustavoghp87/misericordia-web-github.git"
   },
   "author": "ghp",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/gustavoghp87/lumen-web/issues"
+    "url": "https://github.com/gustavoghp87/misericordia-web-github/issues"
   },
-  "homepage": "https://github.com/gustavoghp87/lumen-web#readme",
+  "homepage": "https://github.com/gustavoghp87/misericordia-web-github#readme",
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.3",
     "bcrypt-nodejs": "0.0.3",
