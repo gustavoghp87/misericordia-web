@@ -109,12 +109,13 @@ router.get('/territorios', async (req, res) => {
 
   let habilitados = [];
 
-  req.user.asign.forEach(element => {
+  let array = req.user.asign;
+  array.sort((a, b) => a - b);
+
+  array.forEach(element => {
     habilitados.push({habilitados:element});
   });
-
   
-
   let json = {user: req.user.email, role: req.user.role}
   
   if (req.user.estado==="activado")
