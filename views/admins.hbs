@@ -1,18 +1,100 @@
 <div class="container">
-    <h1> USUARIOS </h1>
+
+    <h1 style="text-align:center;"> USUARIOS </h1>
+    <br/>
+    <br/>
+
     {{#each users}}
-        <h4> {{email}} </h4>
-        <h5 id="rol{{@index}}">
-            Rol: {{role}}
-            <button class="btn btn-info" style="display:none" onclick="hacerAdmin{{@index}}()" id="hacerAdmin{{@index}}"> HACER ADMINISTRADOR </button>
-            <button class="btn btn-warning" style="display:none" onclick="deshacerAdmin{{@index}}()" id="deshacerAdmin{{@index}}"> QUITAR ADMINISTRADOR </button>
-        </h5>
-        <h5 id="estado{{@index}}">
-            Estado: {{estado}}
-            <button class="btn btn-info" style="display:none" onclick="activar{{@index}}()" id="activar{{@index}}"> ACTIVAR </button>
-            <button class="btn btn-warning"style="display:none" onclick="desactivar{{@index}}()" id="desactivar{{@index}}"> DESACTIVAR </button>
-        </h5>
-        <br/>
+        <div class="card" style="margin:20px;"><div class="row" style="margin:30px;">
+            <div class="col-md-4">
+                <h4> {{email}} </h4>
+                <h5 id="rol{{@index}}">
+                    Rol: {{role}}
+                    <button class="btn btn-info" style="display:none" onclick="hacerAdmin{{@index}}()" id="hacerAdmin{{@index}}"> HACER ADMINISTRADOR </button>
+                    <button class="btn btn-warning" style="display:none" onclick="deshacerAdmin{{@index}}()" id="deshacerAdmin{{@index}}"> QUITAR ADMINISTRADOR </button>
+                </h5>
+                <h5 id="estado{{@index}}">
+                    Estado: {{estado}}
+                    <button class="btn btn-info" style="display:none" onclick="activar{{@index}}()" id="activar{{@index}}"> ACTIVAR </button>
+                    <button class="btn btn-warning"style="display:none" onclick="desactivar{{@index}}()" id="desactivar{{@index}}"> DESACTIVAR </button>
+                </h5>
+
+            </div>
+
+
+            <div class="col-md-4">
+                <h4 style="text-align:center; margin-bottom:10px;"> Territorios asignados: </h4>
+
+                <ul>
+                    <h4 id="root{{@index}}"></h4>
+                </ul>
+                
+            </div>
+
+            <script>
+                let insert{{@index}} = "";
+                fetch('/getAsign/{{_id}}')
+                    .then(response => response.json())
+                    .then(data => {
+                        // console.log(data)
+                        if (data.data.length != 0) {
+                            for (let i=0; i+1<data.data.length; i++) {
+                                insert{{@index}} += data.data[i] + " - "
+                            };
+                            insert{{@index}} += data.data[data.data.length-1]
+                            document.getElementById('root{{@index}}').innerHTML = insert{{@index}};
+                        };
+                    });
+            </script>
+
+
+            <div class="col-md-4">
+                <h4 style="text-align:center; margin-bottom:10px;"> Territorios asignados: </h4>
+
+                <div style="margin-left:20px;">
+                <div style="margin: 20px 0px;">
+                    <span style="font-weight:600;"> Agregar: </span>
+                    <input type="number" style="width:50px;" id="asign{{@index}}"  min="1" />
+                    &nbsp; &nbsp;
+                    <div class="btn btn-success" onclick="agregar{{@index}}()"> AGREGAR </div>
+                    <br/>
+                </div>
+
+                
+                <span style="font-weight:600;"> Quitar: </span>
+                <input type="number" style="width:50px;" id="desasign{{@index}}"  min="1" />
+                &nbsp; &nbsp;
+                <div class="btn btn-danger" onclick="quitar{{@index}}()"> QUITAR </div>
+                </div>
+            </div>
+
+            <script>
+                const agregar{{@index}} = () => {
+                    const territorio = document.getElementById('asign{{@index}}').value.toString();
+                    fetch('asignar/{{_id}}', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({territorio})
+                    }).then(location.reload());
+
+                };
+
+                const quitar{{@index}} = () => {
+                    const territorio = document.getElementById('desasign{{@index}}').value.toString();
+                    fetch('desasignar/{{_id}}', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({territorio})
+                    }).then(location.reload());
+
+                };
+
+            </script>
+            
+
+        </div></div>
+
+
 
         <script>
             if (document.getElementById('estado{{@index}}').innerText.trim()=="Estado: desactivado")
@@ -50,9 +132,7 @@
                     socket.emit('usuarios:deshacerAdmin', {email:"{{email}}"});
                 };
             };
-
         </script>
-
     {{/each}}
 
     <script>

@@ -13,7 +13,8 @@ const UserSchema = Schema({
   actividad: {
     type: [],
     default: []
-  }
+  },
+  asign: { type: [Number]}
 });
 
 

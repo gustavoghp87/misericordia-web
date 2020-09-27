@@ -106,14 +106,18 @@ router.get('/territorios', async (req, res, next) => {
 });
 
 router.get('/territorios', async (req, res) => {
-  //console.log(req.user)
-  let habilitados = []
-  for (let i = 0; i < 56; i++) {
-    habilitados.push({habilitados:i+1});
-  }
+
+  let habilitados = [];
+
+  req.user.asign.forEach(element => {
+    habilitados.push({habilitados:element});
+  });
+
+  
+
   let json = {user: req.user.email, role: req.user.role}
   
-  if (req.user.estado=="activado")
+  if (req.user.estado==="activado")
     res.render('index', {json, habilitados});
   else
     req.send("Usuario no autorizado")
@@ -351,6 +355,46 @@ router.post('/agregarVivienda', async (req, res) => {
 //   }
 //   res.render('territorios', {viviendas, json});
 // });
+
+
+router.get('/getAsign/:id', async (req, res) => {
+  if (req.isAuthenticated() && req.user.role==1) {
+    const id = req.params.id;
+    // console.log(id);
+    const user = await User.findById(id);
+    // console.log(user);
+    let array = await user.asign;
+    array.sort((a, b) => a - b);
+    res.json({data:array})
+  }
+});
+
+router.post('/asignar/:id', async (req, res) => {
+  if (req.isAuthenticated() && req.user.role==1) {
+    const id = req.params.id;
+    // console.log(id);
+    try {
+      await User.findByIdAndUpdate(id, {$addToSet: {asign: [parseInt(req.body.territorio)]}});
+    } catch(error) {console.log(error)};
+    res.status(200);
+  } else {
+    res.status(200);
+  }
+});
+
+router.post('/desasignar/:id', async (req, res) => {
+  if (req.isAuthenticated() && req.user.role==1) {
+    const id = req.params.id;
+    // console.log(id);
+    try {
+      await User.findByIdAndUpdate(id, {$pullAll: {asign: [parseInt(req.body.territorio)]}});
+    } catch(error) {console.log(error)};
+    res.status(200);
+  } else {
+    res.status(200);
+  }
+});
+
 
 router.get('*', (_, res) => {
   res.send("Sección no encontrada...");
